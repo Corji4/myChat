@@ -34,7 +34,7 @@ public class MainFrame extends JFrame {
     private static final int MY_PORT = 4444;
     private static final int SERVER_PORT = 8080;
 
-    final String ADDRESS = InetAddress.getLocalHost().getHostAddress();
+    private final String ADDRESS = InetAddress.getLocalHost().getHostAddress();
 
     private final JTextField textFieldFrom;
     //private final JTextField textFieldTo;
