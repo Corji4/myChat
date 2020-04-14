@@ -1,17 +1,9 @@
 package bsu.rfe.java.group6.Ozhich.own.project;
 
-import com.sun.tools.javac.Main;
-import javafx.animation.AnimationTimer;
-
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.awt.event.*;
+import java.io.*;
 import java.net.*;
 
 public class MainFrame extends JFrame {
@@ -22,7 +14,6 @@ public class MainFrame extends JFrame {
     private static final int FRAME_MINIMUM_HEIGHT = 500;
 
     private static final int FROM_FIELD_DEFAULT_COLUMNS = 10;
-    private static final int TO_FIELD_DEFAULT_COLUMNS = 20;
 
     private static final int INCOMING_AREA_DEFAULT_ROWS = 10;
     private static final int OUTGOING_AREA_DEFAULT_ROWS = 5;
@@ -58,7 +49,6 @@ public class MainFrame extends JFrame {
         textAreaIncoming.setDisabledTextColor(Color.BLACK);
         // Контейнер, обеспечивающий прокрутку текстовой области
         final JScrollPane scrollPaneIncoming = new JScrollPane(textAreaIncoming);
-        // Подпись полей
         final JLabel labelFrom = new JLabel("Подпись");
         final JLabel labelTo = new JLabel("Ваш адресс " + ADDRESS + ":" + MY_PORT);
         // Поля ввода имени пользователя и адреса получателя
@@ -166,7 +156,11 @@ public class MainFrame extends JFrame {
                                 .getAddress()
                                 .getHostAddress();
                         // Выводим сообщение в текстовую область
-                        textAreaIncoming.append(senderName + ":\n       " + message + "\n");
+                        textAreaIncoming.append(senderName + ":\n" + message + "\n");
+                        // почему-то не скролит до конца
+                        scrollPaneIncoming.revalidate();
+                        scrollPaneIncoming.getVerticalScrollBar().setValue(
+                                scrollPaneIncoming.getVerticalScrollBar().getMaximum());
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -196,12 +190,24 @@ public class MainFrame extends JFrame {
             // Создадим сокет для соединения
             final Socket socket = new Socket(ADDRESS, SERVER_PORT);
             // Открываем поток вывода данных
-            final DataOutputStream out =
+            final OutputStream out =
                     new DataOutputStream(socket.getOutputStream());
-            // Записываем в поток
-            out.writeUTF(senderName);
-            out.writeUTF(message);
-            out.writeUTF(Integer.toString(MY_PORT));
+            // Записываем инструкции в поток
+            FileWriter fileWriter = new FileWriter(new File("src/messageSettings"));
+            fileWriter.write(ADDRESS + "\n");
+            fileWriter.write(Integer.toString(MY_PORT) + "\n");
+            fileWriter.write(senderName + "\n");
+            fileWriter.write("SEND ALL\n");
+            fileWriter.write(message);
+            fileWriter.close();
+
+            FileInputStream in = new FileInputStream(new File("src/messageSettings"));
+            byte[] bt = new byte[1024];
+            while (in.read(bt) > 0) {
+                out.write(bt);
+            }
+            out.close();
+            in.close();
             // Закрываем сокет
             socket.close();
             // Очищаем текстовую область ввода сообщения
