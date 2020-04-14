@@ -2,19 +2,31 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="95365cfc-dbc1-42df-9a88-831b1cbb9cbb" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/bsu/rfe/java/group6/Ozhich/own/project/Address.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/bsu/rfe/java/group6/Ozhich/own/project/AuthorizationFrame.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/checkServerConnection.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/myChat/bsu/rfe/java/group6/Ozhich/own/project/MainFrame$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/myChat/bsu/rfe/java/group6/Ozhich/own/project/MainFrame$1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/myChat/bsu/rfe/java/group6/Ozhich/own/project/MainFrame$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/myChat/bsu/rfe/java/group6/Ozhich/own/project/MainFrame$2.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/myChat/bsu/rfe/java/group6/Ozhich/own/project/MainFrame$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/myChat/bsu/rfe/java/group6/Ozhich/own/project/MainFrame$3.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/myChat/bsu/rfe/java/group6/Ozhich/own/project/MainFrame$4.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/myChat/bsu/rfe/java/group6/Ozhich/own/project/MainFrame$4.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/myChat/bsu/rfe/java/group6/Ozhich/own/project/MainFrame$4.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/myChat/bsu/rfe/java/group6/Ozhich/own/project/MainFrame.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/myChat/bsu/rfe/java/group6/Ozhich/own/project/MainFrame.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/myChat/messageSettings" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/myChat/messageSettings" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/bsu/rfe/java/group6/Ozhich/own/project/MainFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/bsu/rfe/java/group6/Ozhich/own/project/MainFrame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/messageSettings" beforeDir="false" afterPath="$PROJECT_DIR$/src/messageSettings" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -38,6 +50,14 @@
     <property name="project.structure.side.proportion" value="0.0" />
     <property name="settings.editor.selected.configurable" value="preferences.keymap" />
   </component>
+  <component name="RecentsManager">
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="bsu.rfe.java.group6.Ozhich.own.project" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\учёба\2-ой курс\Java\labs\myChat\src" />
+    </key>
+  </component>
   <component name="RunDashboard">
     <option name="ruleStates">
       <list>
@@ -52,7 +72,7 @@
   </component>
   <component name="RunManager" selected="Application.Main">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true">
-      <option name="MAIN_CLASS_NAME" value="bsu.rfe.java.group6.Ozhich.own.project.MainFrame" />
+      <option name="MAIN_CLASS_NAME" value="bsu.rfe.java.group6.Ozhich.own.project.AuthorizationFrame" />
       <module name="myChat" />
       <RunnerSettings RunnerId="Run" />
       <ConfigurationWrapper RunnerId="Run" />
@@ -212,7 +232,8 @@
       <workItem from="1586283060701" duration="22000" />
       <workItem from="1586291099263" duration="2955000" />
       <workItem from="1586294073652" duration="32000" />
-      <workItem from="1586850646502" duration="5656000" />
+      <workItem from="1586850646502" duration="10265000" />
+      <workItem from="1586862192032" duration="4748000" />
     </task>
     <servers />
   </component>

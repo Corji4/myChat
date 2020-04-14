@@ -22,10 +22,11 @@ public class MainFrame extends JFrame {
     private static final int MEDIUM_GAP = 10;
     private static final int LARGE_GAP = 15;
 
-    private static final int MY_PORT = 4444;
-    private static final int SERVER_PORT = 8080;
+    private static int MY_PORT = 4444;
+    private final String MY_ADDRESS = InetAddress.getLocalHost().getHostAddress();
+    private Address SERVER_ADDRESS;
 
-    private final String ADDRESS = InetAddress.getLocalHost().getHostAddress();
+    private String MY_NAME;
 
     private final JTextField textFieldFrom;
     //private final JTextField textFieldTo;
@@ -36,8 +37,11 @@ public class MainFrame extends JFrame {
     private boolean enter = false;
     private boolean ctrl = false;
 
-    public MainFrame() throws UnknownHostException {
+    public MainFrame(int myPort, Address address, String name) throws UnknownHostException {
         super(FRAME_TITLE);
+        MY_PORT = myPort;
+        SERVER_ADDRESS = address;
+        MY_NAME = name;
         setMinimumSize(new Dimension(FRAME_MINIMUM_WIDTH, FRAME_MINIMUM_HEIGHT));
         // Центрирование окна
         final Toolkit kit = Toolkit.getDefaultToolkit();
@@ -50,9 +54,11 @@ public class MainFrame extends JFrame {
         // Контейнер, обеспечивающий прокрутку текстовой области
         final JScrollPane scrollPaneIncoming = new JScrollPane(textAreaIncoming);
         final JLabel labelFrom = new JLabel("Подпись");
-        final JLabel labelTo = new JLabel("Ваш адресс " + ADDRESS + ":" + MY_PORT);
+        final JLabel labelTo = new JLabel("Ваш адресс " + MY_ADDRESS + ":" + MY_PORT);
         // Поля ввода имени пользователя и адреса получателя
         textFieldFrom = new JTextField(FROM_FIELD_DEFAULT_COLUMNS);
+        textFieldFrom.setText(MY_NAME);
+        textFieldFrom.setEnabled(false);
         // Текстовая область для ввода сообщений
         textAreaOutgoing = new JTextArea(OUTGOING_AREA_DEFAULT_ROWS, 0);
         textAreaOutgoing.addKeyListener(new KeyAdapter() {
@@ -188,16 +194,16 @@ public class MainFrame extends JFrame {
                 return;
             }
             // Создадим сокет для соединения
-            final Socket socket = new Socket(ADDRESS, SERVER_PORT);
+            final Socket socket = new Socket(SERVER_ADDRESS.getIP(), SERVER_ADDRESS.getPort());
             // Открываем поток вывода данных
             final OutputStream out =
                     new DataOutputStream(socket.getOutputStream());
             // Записываем инструкции в поток
             FileWriter fileWriter = new FileWriter(new File("src/messageSettings"));
-            fileWriter.write(ADDRESS + "\n");
+            fileWriter.write(MY_ADDRESS + "\n");
             fileWriter.write(Integer.toString(MY_PORT) + "\n");
+            fileWriter.write("SEND_ALL\n");
             fileWriter.write(senderName + "\n");
-            fileWriter.write("SEND ALL\n");
             fileWriter.write(message);
             fileWriter.close();
 
@@ -226,18 +232,18 @@ public class MainFrame extends JFrame {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                final MainFrame frame;
-                try {
-                    frame = new MainFrame();
-                    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                    frame.setVisible(true);
-                } catch (UnknownHostException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+//        SwingUtilities.invokeLater(new Runnable() {
+//            @Override
+//            public void run() {
+//                final MainFrame frame;
+//                try {
+//                    frame = new MainFrame();
+//                    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//                    frame.setVisible(true);
+//                } catch (UnknownHostException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
     }
 }
