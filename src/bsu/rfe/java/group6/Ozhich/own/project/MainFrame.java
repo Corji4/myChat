@@ -8,10 +8,10 @@ import java.net.*;
 
 public class MainFrame extends JFrame {
 
-    private static final String FRAME_TITLE = "Клиент мгновенных сеобщений";
+    private static final String FRAME_TITLE = "Клиент";
 
     private static final int FRAME_MINIMUM_WIDTH = 500;
-    private static final int FRAME_MINIMUM_HEIGHT = 500;
+    private static final int FRAME_MINIMUM_HEIGHT = 700;
 
     private static final int FROM_FIELD_DEFAULT_COLUMNS = 10;
 
@@ -24,12 +24,15 @@ public class MainFrame extends JFrame {
 
     private static int MY_PORT = 4444;
     private final String MY_ADDRESS = InetAddress.getLocalHost().getHostAddress();
-    private Address SERVER_ADDRESS;
+    private Address SERVER_ADDRESS = new Address("192.168.43.159", 8080);
 
-    private String MY_NAME;
+    private final JTextField textFieldLogin;
+    private final JPasswordField textFieldPassword;
+    private final JTextField textFieldAddress;
 
-    private final JTextField textFieldFrom;
-    //private final JTextField textFieldTo;
+    final JButton registrationButton;
+    final JButton authorizationButton;
+    final JButton sendButton;
 
     private final JTextArea textAreaIncoming;
     private final JTextArea textAreaOutgoing;
@@ -37,11 +40,10 @@ public class MainFrame extends JFrame {
     private boolean enter = false;
     private boolean ctrl = false;
 
-    public MainFrame(int myPort, Address address, String name) throws UnknownHostException {
+    private final MainFrame THIS = this;
+
+    public MainFrame() throws UnknownHostException {
         super(FRAME_TITLE);
-        MY_PORT = myPort;
-        SERVER_ADDRESS = address;
-        MY_NAME = name;
         setMinimumSize(new Dimension(FRAME_MINIMUM_WIDTH, FRAME_MINIMUM_HEIGHT));
         // Центрирование окна
         final Toolkit kit = Toolkit.getDefaultToolkit();
@@ -53,12 +55,16 @@ public class MainFrame extends JFrame {
         textAreaIncoming.setDisabledTextColor(Color.BLACK);
         // Контейнер, обеспечивающий прокрутку текстовой области
         final JScrollPane scrollPaneIncoming = new JScrollPane(textAreaIncoming);
-        final JLabel labelFrom = new JLabel("Подпись");
-        final JLabel labelTo = new JLabel("Ваш адресс " + MY_ADDRESS + ":" + MY_PORT);
-        // Поля ввода имени пользователя и адреса получателя
-        textFieldFrom = new JTextField(FROM_FIELD_DEFAULT_COLUMNS);
-        textFieldFrom.setText(MY_NAME);
-        textFieldFrom.setEnabled(false);
+
+        JLabel labelLogin = new JLabel("Login");
+        JLabel labelPassword = new JLabel("Password");
+        JLabel labelAddress = new JLabel("Address");
+
+        textFieldLogin = new JTextField(FROM_FIELD_DEFAULT_COLUMNS);
+        textFieldPassword = new JPasswordField(FROM_FIELD_DEFAULT_COLUMNS);
+        textFieldAddress = new JTextField(FROM_FIELD_DEFAULT_COLUMNS);
+        textFieldAddress.setText("192.168.43.159:8080");
+
         // Текстовая область для ввода сообщений
         textAreaOutgoing = new JTextArea(OUTGOING_AREA_DEFAULT_ROWS, 0);
         textAreaOutgoing.addKeyListener(new KeyAdapter() {
@@ -73,7 +79,7 @@ public class MainFrame extends JFrame {
                         break;
                 }
                 if (ctrl && enter) {
-                    sendMessage();
+                    sendMessage("SEND_ALL");
                 }
             }
 
@@ -91,45 +97,79 @@ public class MainFrame extends JFrame {
         });
         // Контейнер, обеспечивающий прокрутку текстовой области
         final JScrollPane scrollPaneOutgoing = new JScrollPane(textAreaOutgoing);
-        // Панель ввода сообщений
-        final JPanel messagePanel = new JPanel();
-        messagePanel.setBorder(BorderFactory.createTitledBorder("Сообщение"));
         // Кнопка отправки сообщения
-        final JButton sendButton = new JButton("Отправить");
+        sendButton = new JButton("Send");
+        sendButton.setEnabled(false);
         sendButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                sendMessage();
+                sendMessage("SEND_ALL");
             }
         });
-        // компановка элементов панели "Сообщение"
+        authorizationButton = new JButton("Authorization");
+        authorizationButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                sendMessage("AUTHORIZATION");
+            }
+        });
+        registrationButton = new JButton("Registration");
+        registrationButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                sendMessage("REGISTRATION");
+            }
+        });
+        // компановка элементов
+        final JPanel messagePanel = new JPanel();
+        messagePanel.setBorder(
+                BorderFactory.createTitledBorder("Сообщение"));
+
         final GroupLayout layout2 = new GroupLayout(messagePanel);
         messagePanel.setLayout(layout2);
         layout2.setHorizontalGroup(layout2.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout2.createParallelGroup(GroupLayout.Alignment.TRAILING)
                         .addGroup(layout2.createSequentialGroup()
-                                .addComponent(labelFrom)
+                                .addComponent(labelLogin)
                                 .addGap(SMALL_GAP)
-                                .addComponent(textFieldFrom)
+                                .addComponent(textFieldLogin)
                                 .addGap(LARGE_GAP)
-                                .addComponent(labelTo)
-                                .addGap(SMALL_GAP))
+                                .addComponent(authorizationButton))
+                        .addGroup(layout2.createSequentialGroup()
+                                .addComponent(labelPassword)
+                                .addGap(SMALL_GAP)
+                                .addComponent(textFieldPassword)
+                                .addGap(LARGE_GAP)
+                                .addComponent(registrationButton))
+                        .addGroup(layout2.createSequentialGroup()
+                                .addComponent(labelAddress)
+                                .addGap(SMALL_GAP)
+                                .addComponent(textFieldAddress))
                         .addComponent(scrollPaneOutgoing)
                         .addComponent(sendButton))
                 .addContainerGap());
+
         layout2.setVerticalGroup(layout2.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout2.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(labelFrom)
-                        .addComponent(textFieldFrom)
-                        .addComponent(labelTo))
+                .addContainerGap().addGroup(layout2.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                        .addComponent(labelLogin)
+                        .addComponent(textFieldLogin)
+                        .addComponent(authorizationButton))
+                .addGap(MEDIUM_GAP)
+                .addContainerGap().addGroup(layout2.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                        .addComponent(labelPassword)
+                        .addComponent(textFieldPassword)
+                        .addComponent(registrationButton))
+                .addGap(MEDIUM_GAP)
+                .addContainerGap().addGroup(layout2.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                        .addComponent(labelAddress)
+                        .addComponent(textFieldAddress))
                 .addGap(MEDIUM_GAP)
                 .addComponent(scrollPaneOutgoing)
                 .addGap(MEDIUM_GAP)
                 .addComponent(sendButton)
                 .addContainerGap());
-        // Компановка элементов фрейма
+        // Компоновка элементов фрейма
         final GroupLayout layout1 = new GroupLayout(getContentPane());
         setLayout(layout1);
         layout1.setHorizontalGroup(layout1.createSequentialGroup()
@@ -144,6 +184,9 @@ public class MainFrame extends JFrame {
                 .addGap(MEDIUM_GAP)
                 .addComponent(messagePanel)
                 .addContainerGap());
+
+        //
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -153,16 +196,39 @@ public class MainFrame extends JFrame {
                         final Socket socket = serverSocket.accept();
                         final DataInputStream in = new DataInputStream(socket.getInputStream());
                         // Читаем из потока
-                        final String senderName = in.readUTF();
-                        final String message = in.readUTF();
+                        final String type = in.readUTF();
+                        if (type.toUpperCase().equals("AUTHORIZATION")) {
+                            if (!in.readBoolean()) {
+                                JOptionPane.showMessageDialog(THIS, "Введены неверные данные или пользователь не существует", "Ошибка",
+                                        JOptionPane.ERROR_MESSAGE);
+                            } else {
+                                sendButton.setEnabled(true);
+                                registrationButton.setEnabled(false);
+                                authorizationButton.setEnabled(false);
+                                textFieldLogin.setEnabled(false);
+                                textFieldPassword.setEnabled(false);
+                                textFieldAddress.setEnabled(false);
+                            }
+                        } else if (type.toUpperCase().equals("REGISTRATION")) {
+                            if (!in.readBoolean()) {
+                                JOptionPane.showMessageDialog(THIS, "Такой пользователь уже существует", "Ошибка",
+                                        JOptionPane.ERROR_MESSAGE);
+                            } else {
+                                sendButton.setEnabled(true);
+                                registrationButton.setEnabled(false);
+                                authorizationButton.setEnabled(false);
+                                textFieldLogin.setEnabled(false);
+                                textFieldPassword.setEnabled(false);
+                                textFieldAddress.setEnabled(false);
+                            }
+                        } else if (type.toUpperCase().equals("SEND_ALL")) {
+                            // Выводим сообщение в текстовую область
+                            final String name = in.readUTF();
+                            final String message = in.readUTF();
+                            textAreaIncoming.append(">>>" + name + "<<<\n" + message + "\n");
+                        }
                         // Закрываем соединение
                         socket.close();
-                        final String address = ((InetSocketAddress) socket
-                                .getRemoteSocketAddress())
-                                .getAddress()
-                                .getHostAddress();
-                        // Выводим сообщение в текстовую область
-                        textAreaIncoming.append(senderName + ":\n" + message + "\n");
                         // почему-то не скролит до конца
                         scrollPaneIncoming.revalidate();
                         scrollPaneIncoming.getVerticalScrollBar().setValue(
@@ -177,45 +243,68 @@ public class MainFrame extends JFrame {
         }).start();
     }
 
-    private void sendMessage() {
+    private void sendMessage(String type) {
         try {
+            SERVER_ADDRESS = new Address(textFieldAddress.getText().split(":")[0],
+                    Integer.parseInt(textFieldAddress.getText().split(":")[1]));
+
             // Получаем необходимые параметры
-            final String senderName = textFieldFrom.getText();
+            final String login = textFieldLogin.getText();
+            final String password = new String(textFieldPassword.getPassword());
             final String message = textAreaOutgoing.getText();
             // Убеждаемся, что поля не пустые
-            if (senderName.isEmpty()) {
+            if (login.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Введите имя отправителя", "Ошибка",
                         JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            if (message.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Введите текст", "Ошибка",
+            if (password.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Введите пароль", "Ошибка",
                         JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            // Создадим сокет для соединения
-            final Socket socket = new Socket(SERVER_ADDRESS.getIP(), SERVER_ADDRESS.getPort());
-            // Открываем поток вывода данных
-            final OutputStream out =
-                    new DataOutputStream(socket.getOutputStream());
-            // Записываем инструкции в поток
-            FileWriter fileWriter = new FileWriter(new File("src/messageSettings"));
-            fileWriter.write(MY_ADDRESS + "\n");
-            fileWriter.write(Integer.toString(MY_PORT) + "\n");
-            fileWriter.write("SEND_ALL\n");
-            fileWriter.write(senderName + "\n");
-            fileWriter.write(message);
-            fileWriter.close();
-
-            FileInputStream in = new FileInputStream(new File("src/messageSettings"));
-            byte[] bt = new byte[1024];
-            while (in.read(bt) > 0) {
-                out.write(bt);
+            if (type.toUpperCase().equals("AUTHORIZATION")) {
+                // Создадим сокет для соединения
+                final Socket socket = new Socket(SERVER_ADDRESS.getIP(), SERVER_ADDRESS.getPort());
+                // Открываем поток вывода данных
+                final DataOutputStream out =
+                        new DataOutputStream(socket.getOutputStream());
+                out.writeUTF("AUTHORIZATION");
+                out.writeUTF(InetAddress.getLocalHost().getHostAddress());
+                out.writeUTF(String.valueOf(MY_PORT));
+                out.writeUTF(login);
+                out.writeUTF(password);
+                socket.close();
+            } else if (type.toUpperCase().equals("REGISTRATION")) {
+                // Создадим сокет для соединения
+                final Socket socket = new Socket(SERVER_ADDRESS.getIP(), SERVER_ADDRESS.getPort());
+                // Открываем поток вывода данных
+                final DataOutputStream out =
+                        new DataOutputStream(socket.getOutputStream());
+                out.writeUTF("REGISTRATION");
+                out.writeUTF(InetAddress.getLocalHost().getHostAddress());
+                out.writeUTF(String.valueOf(MY_PORT));
+                out.writeUTF(login);
+                out.writeUTF(password);
+                socket.close();
+            } else if (type.toUpperCase().equals("SEND_ALL")) {
+                if (message.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "Введите текст сообщения", "Ошибка",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                // Создадим сокет для соединения
+                final Socket socket = new Socket(SERVER_ADDRESS.getIP(), SERVER_ADDRESS.getPort());
+                // Открываем поток вывода данных
+                final DataOutputStream out =
+                        new DataOutputStream(socket.getOutputStream());
+                out.writeUTF("SEND_ALL");
+                out.writeUTF(InetAddress.getLocalHost().getHostAddress());
+                out.writeUTF(String.valueOf(MY_PORT));
+                out.writeUTF(login);
+                out.writeUTF(message);
+                socket.close();
             }
-            out.close();
-            in.close();
-            // Закрываем сокет
-            socket.close();
             // Очищаем текстовую область ввода сообщения
             textAreaOutgoing.setText("");
         } catch (UnknownHostException e) {
@@ -232,18 +321,18 @@ public class MainFrame extends JFrame {
     }
 
     public static void main(String[] args) {
-//        SwingUtilities.invokeLater(new Runnable() {
-//            @Override
-//            public void run() {
-//                final MainFrame frame;
-//                try {
-//                    frame = new MainFrame();
-//                    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//                    frame.setVisible(true);
-//                } catch (UnknownHostException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                final MainFrame frame;
+                try {
+                    frame = new MainFrame();
+                    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    frame.setVisible(true);
+                } catch (UnknownHostException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 }

@@ -2,17 +2,21 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="95365cfc-dbc1-42df-9a88-831b1cbb9cbb" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/bsu/rfe/java/group6/Ozhich/own/project/Address.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/bsu/rfe/java/group6/Ozhich/own/project/AuthorizationFrame.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/checkServerConnection.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/myChat/bsu/rfe/java/group6/Ozhich/own/project/AuthorizationFrame$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/myChat/bsu/rfe/java/group6/Ozhich/own/project/AuthorizationFrame$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/myChat/bsu/rfe/java/group6/Ozhich/own/project/AuthorizationFrame.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/myChat/bsu/rfe/java/group6/Ozhich/own/project/MainFrame$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/myChat/bsu/rfe/java/group6/Ozhich/own/project/MainFrame$1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/myChat/bsu/rfe/java/group6/Ozhich/own/project/MainFrame$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/myChat/bsu/rfe/java/group6/Ozhich/own/project/MainFrame$2.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/myChat/bsu/rfe/java/group6/Ozhich/own/project/MainFrame$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/myChat/bsu/rfe/java/group6/Ozhich/own/project/MainFrame$3.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/myChat/bsu/rfe/java/group6/Ozhich/own/project/MainFrame$4.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/myChat/bsu/rfe/java/group6/Ozhich/own/project/MainFrame.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/myChat/bsu/rfe/java/group6/Ozhich/own/project/MainFrame.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/myChat/checkServerConnection" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/myChat/checkServerConnection.txt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/myChat/messageSettings" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/myChat/messageSettings" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/bsu/rfe/java/group6/Ozhich/own/project/AuthorizationFrame.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/bsu/rfe/java/group6/Ozhich/own/project/MainFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/bsu/rfe/java/group6/Ozhich/own/project/MainFrame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/checkServerConnection" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/checkServerConnection.txt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/messageSettings" beforeDir="false" afterPath="$PROJECT_DIR$/src/messageSettings" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -72,7 +76,7 @@
   </component>
   <component name="RunManager" selected="Application.Main">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true">
-      <option name="MAIN_CLASS_NAME" value="bsu.rfe.java.group6.Ozhich.own.project.AuthorizationFrame" />
+      <option name="MAIN_CLASS_NAME" value="bsu.rfe.java.group6.Ozhich.own.project.MainFrame" />
       <module name="myChat" />
       <RunnerSettings RunnerId="Run" />
       <ConfigurationWrapper RunnerId="Run" />
@@ -233,7 +237,9 @@
       <workItem from="1586291099263" duration="2955000" />
       <workItem from="1586294073652" duration="32000" />
       <workItem from="1586850646502" duration="10265000" />
-      <workItem from="1586862192032" duration="4748000" />
+      <workItem from="1586862192032" duration="5051000" />
+      <workItem from="1587450188646" duration="4911000" />
+      <workItem from="1587463641013" duration="11556000" />
     </task>
     <servers />
   </component>
