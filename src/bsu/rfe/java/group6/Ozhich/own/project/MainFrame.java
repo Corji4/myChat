@@ -24,7 +24,7 @@ public class MainFrame extends JFrame {
 
     private static int MY_PORT = 4444;
     private final String MY_ADDRESS = InetAddress.getLocalHost().getHostAddress();
-    private Address SERVER_ADDRESS = new Address("192.168.43.159", 8080);
+    private Address SERVER_ADDRESS = new Address("192.168.1.6", 8080);
 
     private final JTextField textFieldLogin;
     private final JPasswordField textFieldPassword;
@@ -37,10 +37,18 @@ public class MainFrame extends JFrame {
     private final JTextArea textAreaIncoming;
     private final JTextArea textAreaOutgoing;
 
+    private JLabel iconLabel = new JLabel();
+    private ImageIcon icon = new ImageIcon("src/images/startImage.jpg");
+
     private boolean enter = false;
     private boolean ctrl = false;
 
     private final MainFrame THIS = this;
+
+    private String selectedPhotoName;
+    private String newPhotoName;
+    private String newPhotoPath;
+    private String fileNamesList;
 
     public MainFrame() throws UnknownHostException {
         super(FRAME_TITLE);
@@ -63,7 +71,7 @@ public class MainFrame extends JFrame {
         textFieldLogin = new JTextField(FROM_FIELD_DEFAULT_COLUMNS);
         textFieldPassword = new JPasswordField(FROM_FIELD_DEFAULT_COLUMNS);
         textFieldAddress = new JTextField(FROM_FIELD_DEFAULT_COLUMNS);
-        textFieldAddress.setText("192.168.43.159:8080");
+        textFieldAddress.setText("192.168.1.6:8080");
 
         // Текстовая область для ввода сообщений
         textAreaOutgoing = new JTextArea(OUTGOING_AREA_DEFAULT_ROWS, 0);
@@ -197,35 +205,58 @@ public class MainFrame extends JFrame {
                         final DataInputStream in = new DataInputStream(socket.getInputStream());
                         // Читаем из потока
                         final String type = in.readUTF();
-                        if (type.toUpperCase().equals("AUTHORIZATION")) {
-                            if (!in.readBoolean()) {
-                                JOptionPane.showMessageDialog(THIS, "Введены неверные данные или пользователь не существует", "Ошибка",
-                                        JOptionPane.ERROR_MESSAGE);
-                            } else {
-                                sendButton.setEnabled(true);
-                                registrationButton.setEnabled(false);
-                                authorizationButton.setEnabled(false);
-                                textFieldLogin.setEnabled(false);
-                                textFieldPassword.setEnabled(false);
-                                textFieldAddress.setEnabled(false);
+                        switch (type.toUpperCase()) {
+                            case "AUTHORIZATION": {
+                                if (!in.readBoolean()) {
+                                    JOptionPane.showMessageDialog(THIS, "Введены неверные данные или пользователь не существует", "Ошибка",
+                                            JOptionPane.ERROR_MESSAGE);
+                                } else {
+                                    sendButton.setEnabled(true);
+                                    registrationButton.setEnabled(false);
+                                    authorizationButton.setEnabled(false);
+                                    textFieldLogin.setEnabled(false);
+                                    textFieldPassword.setEnabled(false);
+                                    textFieldAddress.setEnabled(false);
+                                }
+                                break;
                             }
-                        } else if (type.toUpperCase().equals("REGISTRATION")) {
-                            if (!in.readBoolean()) {
-                                JOptionPane.showMessageDialog(THIS, "Такой пользователь уже существует", "Ошибка",
-                                        JOptionPane.ERROR_MESSAGE);
-                            } else {
-                                sendButton.setEnabled(true);
-                                registrationButton.setEnabled(false);
-                                authorizationButton.setEnabled(false);
-                                textFieldLogin.setEnabled(false);
-                                textFieldPassword.setEnabled(false);
-                                textFieldAddress.setEnabled(false);
+                            case "REGISTRATION": {
+                                if (!in.readBoolean()) {
+                                    JOptionPane.showMessageDialog(THIS, "Такой пользователь уже существует", "Ошибка",
+                                            JOptionPane.ERROR_MESSAGE);
+                                } else {
+                                    sendButton.setEnabled(true);
+                                    registrationButton.setEnabled(false);
+                                    authorizationButton.setEnabled(false);
+                                    textFieldLogin.setEnabled(false);
+                                    textFieldPassword.setEnabled(false);
+                                    textFieldAddress.setEnabled(false);
+                                }
+                                break;
                             }
-                        } else if (type.toUpperCase().equals("SEND_ALL")) {
-                            // Выводим сообщение в текстовую область
-                            final String name = in.readUTF();
-                            final String message = in.readUTF();
-                            textAreaIncoming.append(">>>" + name + "<<<\n" + message + "\n");
+                            case "SEND_ALL": {
+                                // Выводим сообщение в текстовую область
+                                final String name = in.readUTF();
+                                final String message = in.readUTF();
+                                textAreaIncoming.append(">>>" + name + "<<<\n" + message + "\n");
+                                break;
+                            }
+                            case "GET_FILE_LIST": {
+                                fileNamesList = in.readUTF();
+                                break;
+                            }
+                            case "GET_PHOTO_BY_NAME":{
+                                byte[] byteArray;
+                                File photo = new File("src/images/" + selectedPhotoName);
+                                if (!photo.createNewFile()) {
+                                    continue;
+                                }
+                                FileOutputStream fos = new FileOutputStream(photo);
+                                BufferedOutputStream bos = new BufferedOutputStream(fos);
+                                byteArray = in.readAllBytes();
+                                bos.write(byteArray, 0, byteArray.length);
+                                break;
+                            }
                         }
                         // Закрываем соединение
                         socket.close();
@@ -263,47 +294,90 @@ public class MainFrame extends JFrame {
                         JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            if (type.toUpperCase().equals("AUTHORIZATION")) {
-                // Создадим сокет для соединения
-                final Socket socket = new Socket(SERVER_ADDRESS.getIP(), SERVER_ADDRESS.getPort());
-                // Открываем поток вывода данных
-                final DataOutputStream out =
-                        new DataOutputStream(socket.getOutputStream());
-                out.writeUTF("AUTHORIZATION");
-                out.writeUTF(InetAddress.getLocalHost().getHostAddress());
-                out.writeUTF(String.valueOf(MY_PORT));
-                out.writeUTF(login);
-                out.writeUTF(password);
-                socket.close();
-            } else if (type.toUpperCase().equals("REGISTRATION")) {
-                // Создадим сокет для соединения
-                final Socket socket = new Socket(SERVER_ADDRESS.getIP(), SERVER_ADDRESS.getPort());
-                // Открываем поток вывода данных
-                final DataOutputStream out =
-                        new DataOutputStream(socket.getOutputStream());
-                out.writeUTF("REGISTRATION");
-                out.writeUTF(InetAddress.getLocalHost().getHostAddress());
-                out.writeUTF(String.valueOf(MY_PORT));
-                out.writeUTF(login);
-                out.writeUTF(password);
-                socket.close();
-            } else if (type.toUpperCase().equals("SEND_ALL")) {
-                if (message.isEmpty()) {
-                    JOptionPane.showMessageDialog(this, "Введите текст сообщения", "Ошибка",
-                            JOptionPane.ERROR_MESSAGE);
-                    return;
+            switch (type.toUpperCase()) {
+                case "AUTHORIZATION": {
+                    // Создадим сокет для соединения
+                    final Socket socket = new Socket(SERVER_ADDRESS.getIP(), SERVER_ADDRESS.getPort());
+                    // Открываем поток вывода данных
+                    final DataOutputStream out =
+                            new DataOutputStream(socket.getOutputStream());
+                    out.writeUTF("AUTHORIZATION");
+                    out.writeUTF(InetAddress.getLocalHost().getHostAddress());
+                    out.writeUTF(String.valueOf(MY_PORT));
+                    out.writeUTF(login);
+                    out.writeUTF(password);
+                    socket.close();
+                    break;
                 }
-                // Создадим сокет для соединения
-                final Socket socket = new Socket(SERVER_ADDRESS.getIP(), SERVER_ADDRESS.getPort());
-                // Открываем поток вывода данных
-                final DataOutputStream out =
-                        new DataOutputStream(socket.getOutputStream());
-                out.writeUTF("SEND_ALL");
-                out.writeUTF(InetAddress.getLocalHost().getHostAddress());
-                out.writeUTF(String.valueOf(MY_PORT));
-                out.writeUTF(login);
-                out.writeUTF(message);
-                socket.close();
+                case "REGISTRATION": {
+                    // Создадим сокет для соединения
+                    final Socket socket = new Socket(SERVER_ADDRESS.getIP(), SERVER_ADDRESS.getPort());
+                    // Открываем поток вывода данных
+                    final DataOutputStream out =
+                            new DataOutputStream(socket.getOutputStream());
+                    out.writeUTF("REGISTRATION");
+                    out.writeUTF(InetAddress.getLocalHost().getHostAddress());
+                    out.writeUTF(String.valueOf(MY_PORT));
+                    out.writeUTF(login);
+                    out.writeUTF(password);
+                    socket.close();
+                    break;
+                }
+                case "SEND_ALL": {
+                    if (message.isEmpty()) {
+                        JOptionPane.showMessageDialog(this, "Введите текст сообщения", "Ошибка",
+                                JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    // Создадим сокет для соединения
+                    final Socket socket = new Socket(SERVER_ADDRESS.getIP(), SERVER_ADDRESS.getPort());
+                    // Открываем поток вывода данных
+                    final DataOutputStream out =
+                            new DataOutputStream(socket.getOutputStream());
+                    out.writeUTF("SEND_ALL");
+                    out.writeUTF(InetAddress.getLocalHost().getHostAddress());
+                    out.writeUTF(String.valueOf(MY_PORT));
+                    out.writeUTF(login);
+                    out.writeUTF(message);
+                    socket.close();
+                    break;
+                }
+                case "GET_FILE_LIST": {
+                    final Socket socket = new Socket(SERVER_ADDRESS.getIP(), SERVER_ADDRESS.getPort());
+                    final DataOutputStream out =
+                            new DataOutputStream(socket.getOutputStream());
+                    out.writeUTF("SEND_ALL");
+                    out.writeUTF(InetAddress.getLocalHost().getHostAddress());
+                    out.writeUTF(String.valueOf(MY_PORT));
+                    socket.close();
+                }
+                case "GET_PHOTO_BY_NAME": {
+                    final Socket socket = new Socket(SERVER_ADDRESS.getIP(), SERVER_ADDRESS.getPort());
+                    // Открываем поток вывода данных
+                    final DataOutputStream out =
+                            new DataOutputStream(socket.getOutputStream());
+                    out.writeUTF("SEND_ALL");
+                    out.writeUTF(InetAddress.getLocalHost().getHostAddress());
+                    out.writeUTF(String.valueOf(MY_PORT));
+                    out.writeUTF(selectedPhotoName);
+                    socket.close();
+                }
+                case "NEW_PHOTO": {
+                    final Socket socket = new Socket(SERVER_ADDRESS.getIP(), SERVER_ADDRESS.getPort());
+                    final DataOutputStream out =
+                            new DataOutputStream(socket.getOutputStream());
+                    out.writeUTF("SEND_ALL");
+                    out.writeUTF(InetAddress.getLocalHost().getHostAddress());
+                    out.writeUTF(String.valueOf(MY_PORT));
+                    out.writeUTF(newPhotoName);
+                    File photo = new File(newPhotoPath);
+                    byte[] byteArray = new byte[(int) photo.length()];
+                    FileInputStream in = new FileInputStream(photo);
+                    BufferedInputStream bis = new BufferedInputStream(in);
+                    bis.read(byteArray, 0, byteArray.length);
+                    out.write(byteArray, 0, byteArray.length);
+                    socket.close();
+                }
             }
             // Очищаем текстовую область ввода сообщения
             textAreaOutgoing.setText("");
