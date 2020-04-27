@@ -356,7 +356,6 @@ public class MainFrame extends JFrame {
                     // Открываем поток вывода данных
                     final DataOutputStream out =
                             new DataOutputStream(socket.getOutputStream());
-                    out.writeUTF("SEND_ALL");
                     out.writeUTF(InetAddress.getLocalHost().getHostAddress());
                     out.writeUTF(String.valueOf(MY_PORT));
                     out.writeUTF(selectedPhotoName);
