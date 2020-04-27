@@ -346,7 +346,7 @@ public class MainFrame extends JFrame {
                     final Socket socket = new Socket(SERVER_ADDRESS.getIP(), SERVER_ADDRESS.getPort());
                     final DataOutputStream out =
                             new DataOutputStream(socket.getOutputStream());
-                    out.writeUTF("SEND_ALL");
+                    out.writeUTF("GET_FILE_LIST");
                     out.writeUTF(InetAddress.getLocalHost().getHostAddress());
                     out.writeUTF(String.valueOf(MY_PORT));
                     socket.close();
@@ -356,6 +356,7 @@ public class MainFrame extends JFrame {
                     // Открываем поток вывода данных
                     final DataOutputStream out =
                             new DataOutputStream(socket.getOutputStream());
+                    out.writeUTF("GET_PHOTO_BY_NAME");
                     out.writeUTF(InetAddress.getLocalHost().getHostAddress());
                     out.writeUTF(String.valueOf(MY_PORT));
                     out.writeUTF(selectedPhotoName);
@@ -365,7 +366,7 @@ public class MainFrame extends JFrame {
                     final Socket socket = new Socket(SERVER_ADDRESS.getIP(), SERVER_ADDRESS.getPort());
                     final DataOutputStream out =
                             new DataOutputStream(socket.getOutputStream());
-                    out.writeUTF("SEND_ALL");
+                    out.writeUTF("NEW_PHOTO");
                     out.writeUTF(InetAddress.getLocalHost().getHostAddress());
                     out.writeUTF(String.valueOf(MY_PORT));
                     out.writeUTF(newPhotoName);
