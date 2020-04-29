@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
 
 public class MainFrame extends JFrame {
 
@@ -34,7 +35,9 @@ public class MainFrame extends JFrame {
     final JButton authorizationButton;
     final JButton sendButton;
 
-    private final JTextArea textAreaIncoming;
+    //private final JTextArea textAreaIncoming;
+    //private final JTextPane textAreaIncoming;
+    private JEditorPane textAreaIncoming;
     private final JTextArea textAreaOutgoing;
 
     private JLabel iconLabel = new JLabel();
@@ -50,6 +53,8 @@ public class MainFrame extends JFrame {
     private String newPhotoPath;
     private String fileNamesList;
 
+    private ArrayList<String> messageHistory = new ArrayList<String>();
+
     public MainFrame() throws UnknownHostException {
         super(FRAME_TITLE);
         setMinimumSize(new Dimension(FRAME_MINIMUM_WIDTH, FRAME_MINIMUM_HEIGHT));
@@ -57,10 +62,13 @@ public class MainFrame extends JFrame {
         final Toolkit kit = Toolkit.getDefaultToolkit();
         setLocation((kit.getScreenSize().width - getWidth()) / 2, (kit.getScreenSize().height - getHeight()) / 2);
         // Текстовая область для отображения полученных сообщений
-        textAreaIncoming = new JTextArea(INCOMING_AREA_DEFAULT_ROWS, 0);
+        //textAreaIncoming = new JTextArea(INCOMING_AREA_DEFAULT_ROWS, 0);
+        textAreaIncoming = new JEditorPane();
+        textAreaIncoming.setContentType("text/html");
         textAreaIncoming.setEnabled(false);
         textAreaIncoming.setSelectedTextColor(Color.BLACK);
         textAreaIncoming.setDisabledTextColor(Color.BLACK);
+        textAreaIncoming.setText("<img src='file:src/images/startImage.jpg' width=\"400\">");
         // Контейнер, обеспечивающий прокрутку текстовой области
         final JScrollPane scrollPaneIncoming = new JScrollPane(textAreaIncoming);
 
@@ -238,14 +246,15 @@ public class MainFrame extends JFrame {
                                 // Выводим сообщение в текстовую область
                                 final String name = in.readUTF();
                                 final String message = in.readUTF();
-                                textAreaIncoming.append(">>>" + name + "<<<\n" + message + "\n");
+                                //textAreaIncoming.append(">>>" + name + "<<<\n" + message + "\n");
+                                textAreaIncoming.setText(getMessageHistoryToDisplay(name, message));
                                 break;
                             }
                             case "GET_FILE_LIST": {
                                 fileNamesList = in.readUTF();
                                 break;
                             }
-                            case "GET_PHOTO_BY_NAME":{
+                            case "GET_PHOTO_BY_NAME": {
                                 byte[] byteArray;
                                 File photo = new File("src/images/" + selectedPhotoName);
                                 if (!photo.createNewFile()) {
@@ -392,6 +401,28 @@ public class MainFrame extends JFrame {
                     "Не удалось отправить сообщение",
                     "Ошибка", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private String getMessageHistoryToDisplay(String name, String message) {
+        // transformed '\n' to tag <br>
+        StringBuilder reformattedMessage = new StringBuilder();
+        for (int i = 0; i < message.length(); i++) {
+            if (message.charAt(i) == '\n') {
+                reformattedMessage.append("<br>");
+            } else {
+                reformattedMessage.append(message.charAt(i));
+            }
+        }
+        messageHistory.add("<h3>" + name + "</h3>" + reformattedMessage.toString());
+        StringBuilder displayHistory = new StringBuilder();
+        for (String someMessage : messageHistory) {
+            displayHistory.append(someMessage).append("<br>");
+        }
+//        displayHistory.append("<img src = \"").append(path).append("\" alt = \"альтернативный текст\">");
+//        for(int i = messageHistory.size()-1; i>=0;i--) {
+//            displayHistory.append(messageHistory.get(i)).append("<br>");
+//        }
+        return displayHistory.toString();
     }
 
     public static void main(String[] args) {
