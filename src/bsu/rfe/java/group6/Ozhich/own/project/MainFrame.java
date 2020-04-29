@@ -31,27 +31,22 @@ public class MainFrame extends JFrame {
     private final JPasswordField textFieldPassword;
     private final JTextField textFieldAddress;
 
-    final JButton registrationButton;
-    final JButton authorizationButton;
-    final JButton sendButton;
+    private final JButton registrationButton;
+    private final JButton authorizationButton;
+    private final JButton sendButton;
+    private final JButton chooseButton;
 
-    //private final JTextArea textAreaIncoming;
-    //private final JTextPane textAreaIncoming;
     private JEditorPane textAreaIncoming;
     private final JTextArea textAreaOutgoing;
 
-    private JLabel iconLabel = new JLabel();
-    private ImageIcon icon = new ImageIcon("src/images/startImage.jpg");
 
     private boolean enter = false;
     private boolean ctrl = false;
 
     private final MainFrame THIS = this;
 
-    private String selectedPhotoName;
-    private String newPhotoName;
+    private String newPhotoName ="";
     private String newPhotoPath;
-    private String fileNamesList;
 
     private ArrayList<String> messageHistory = new ArrayList<String>();
 
@@ -61,14 +56,12 @@ public class MainFrame extends JFrame {
         // Центрирование окна
         final Toolkit kit = Toolkit.getDefaultToolkit();
         setLocation((kit.getScreenSize().width - getWidth()) / 2, (kit.getScreenSize().height - getHeight()) / 2);
-        // Текстовая область для отображения полученных сообщений
-        //textAreaIncoming = new JTextArea(INCOMING_AREA_DEFAULT_ROWS, 0);
+        // Текстовая область для отображения полученных сообщений 
         textAreaIncoming = new JEditorPane();
         textAreaIncoming.setContentType("text/html");
-        textAreaIncoming.setEnabled(false);
+        textAreaIncoming.setEditable(false);
         textAreaIncoming.setSelectedTextColor(Color.BLACK);
         textAreaIncoming.setDisabledTextColor(Color.BLACK);
-        textAreaIncoming.setText("<img src='file:src/images/startImage.jpg' width=\"400\">");
         // Контейнер, обеспечивающий прокрутку текстовой области
         final JScrollPane scrollPaneIncoming = new JScrollPane(textAreaIncoming);
 
@@ -95,7 +88,11 @@ public class MainFrame extends JFrame {
                         break;
                 }
                 if (ctrl && enter) {
-                    sendMessage("SEND_ALL");
+                    if (newPhotoName.equals("")) {
+                        sendMessage("SEND_ALL");
+                    }else {
+                        sendMessage("SEND_WITH_PHOTO");
+                    }
                 }
             }
 
@@ -119,7 +116,11 @@ public class MainFrame extends JFrame {
         sendButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                sendMessage("SEND_ALL");
+                if (newPhotoName.equals("")) {
+                    sendMessage("SEND_ALL");
+                }else {
+                    sendMessage("SEND_WITH_PHOTO");
+                }
             }
         });
         authorizationButton = new JButton("Authorization");
@@ -136,6 +137,21 @@ public class MainFrame extends JFrame {
                 sendMessage("REGISTRATION");
             }
         });
+
+        chooseButton = new JButton("Open photo");
+        chooseButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                JFileChooser fileOpen = new JFileChooser();
+                int ret = fileOpen.showDialog(null, "Select image file");
+                if (ret == JFileChooser.APPROVE_OPTION) {
+                    File file = fileOpen.getSelectedFile();
+                    newPhotoName = file.getName();
+                    newPhotoPath = file.getPath();
+                }
+            }
+        });
+        chooseButton.setEnabled(false);
         // компановка элементов
         final JPanel messagePanel = new JPanel();
         messagePanel.setBorder(
@@ -163,7 +179,10 @@ public class MainFrame extends JFrame {
                                 .addGap(SMALL_GAP)
                                 .addComponent(textFieldAddress))
                         .addComponent(scrollPaneOutgoing)
-                        .addComponent(sendButton))
+                        .addGroup(layout2.createSequentialGroup()
+                                .addComponent(chooseButton)
+                                .addGap(SMALL_GAP)
+                                .addComponent(sendButton)))
                 .addContainerGap());
 
         layout2.setVerticalGroup(layout2.createSequentialGroup()
@@ -183,7 +202,10 @@ public class MainFrame extends JFrame {
                 .addGap(MEDIUM_GAP)
                 .addComponent(scrollPaneOutgoing)
                 .addGap(MEDIUM_GAP)
-                .addComponent(sendButton)
+                .addContainerGap().addGroup(layout2.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                        .addComponent(chooseButton)
+                        .addGap(MEDIUM_GAP)
+                        .addComponent(sendButton))
                 .addContainerGap());
         // Компоновка элементов фрейма
         final GroupLayout layout1 = new GroupLayout(getContentPane());
@@ -220,6 +242,7 @@ public class MainFrame extends JFrame {
                                             JOptionPane.ERROR_MESSAGE);
                                 } else {
                                     sendButton.setEnabled(true);
+                                    chooseButton.setEnabled(true);
                                     registrationButton.setEnabled(false);
                                     authorizationButton.setEnabled(false);
                                     textFieldLogin.setEnabled(false);
@@ -234,6 +257,7 @@ public class MainFrame extends JFrame {
                                             JOptionPane.ERROR_MESSAGE);
                                 } else {
                                     sendButton.setEnabled(true);
+                                    chooseButton.setEnabled(true);
                                     registrationButton.setEnabled(false);
                                     authorizationButton.setEnabled(false);
                                     textFieldLogin.setEnabled(false);
@@ -250,20 +274,21 @@ public class MainFrame extends JFrame {
                                 textAreaIncoming.setText(getMessageHistoryToDisplay(name, message));
                                 break;
                             }
-                            case "GET_FILE_LIST": {
-                                fileNamesList = in.readUTF();
-                                break;
-                            }
-                            case "GET_PHOTO_BY_NAME": {
+                            case "SEND_WITH_PHOTO": {
+                                String name = in.readUTF();
+                                String message = in.readUTF();
+                                newPhotoName = in.readUTF();
                                 byte[] byteArray;
-                                File photo = new File("src/images/" + selectedPhotoName);
+                                File photo = new File("src/images/" + newPhotoName);
                                 if (!photo.createNewFile()) {
-                                    continue;
+                                    //
                                 }
                                 FileOutputStream fos = new FileOutputStream(photo);
                                 BufferedOutputStream bos = new BufferedOutputStream(fos);
                                 byteArray = in.readAllBytes();
                                 bos.write(byteArray, 0, byteArray.length);
+                                textAreaIncoming.setText(getMessageHistoryToDisplay(name, message));
+                                newPhotoName = "";
                                 break;
                             }
                         }
@@ -351,34 +376,17 @@ public class MainFrame extends JFrame {
                     socket.close();
                     break;
                 }
-                case "GET_FILE_LIST": {
+                case "SEND_WITH_PHOTO": {
                     final Socket socket = new Socket(SERVER_ADDRESS.getIP(), SERVER_ADDRESS.getPort());
                     final DataOutputStream out =
                             new DataOutputStream(socket.getOutputStream());
-                    out.writeUTF("GET_FILE_LIST");
+                    out.writeUTF("SEND_WITH_PHOTO");
                     out.writeUTF(InetAddress.getLocalHost().getHostAddress());
                     out.writeUTF(String.valueOf(MY_PORT));
-                    socket.close();
-                }
-                case "GET_PHOTO_BY_NAME": {
-                    final Socket socket = new Socket(SERVER_ADDRESS.getIP(), SERVER_ADDRESS.getPort());
-                    // Открываем поток вывода данных
-                    final DataOutputStream out =
-                            new DataOutputStream(socket.getOutputStream());
-                    out.writeUTF("GET_PHOTO_BY_NAME");
-                    out.writeUTF(InetAddress.getLocalHost().getHostAddress());
-                    out.writeUTF(String.valueOf(MY_PORT));
-                    out.writeUTF(selectedPhotoName);
-                    socket.close();
-                }
-                case "NEW_PHOTO": {
-                    final Socket socket = new Socket(SERVER_ADDRESS.getIP(), SERVER_ADDRESS.getPort());
-                    final DataOutputStream out =
-                            new DataOutputStream(socket.getOutputStream());
-                    out.writeUTF("NEW_PHOTO");
-                    out.writeUTF(InetAddress.getLocalHost().getHostAddress());
-                    out.writeUTF(String.valueOf(MY_PORT));
+                    out.writeUTF(login);
+                    out.writeUTF(message + " ");
                     out.writeUTF(newPhotoName);
+                    newPhotoName="";
                     File photo = new File(newPhotoPath);
                     byte[] byteArray = new byte[(int) photo.length()];
                     FileInputStream in = new FileInputStream(photo);
@@ -413,11 +421,17 @@ public class MainFrame extends JFrame {
                 reformattedMessage.append(message.charAt(i));
             }
         }
-        messageHistory.add("<h3>" + name + "</h3>" + reformattedMessage.toString());
+        String text = "<h3>" + name + "</h3>" + reformattedMessage.toString();
+
+        if (!newPhotoName.equals("")) {
+            text += "<br>" + "<img src='file:src/images/" + newPhotoName + "' width=\"400\">";
+        }
+        messageHistory.add(text);
         StringBuilder displayHistory = new StringBuilder();
         for (String someMessage : messageHistory) {
             displayHistory.append(someMessage).append("<br>");
         }
+        //displayHistory.append("<img src='file:src/images/startImage.jpg' width=\"400\">");
 //        displayHistory.append("<img src = \"").append(path).append("\" alt = \"альтернативный текст\">");
 //        for(int i = messageHistory.size()-1; i>=0;i--) {
 //            displayHistory.append(messageHistory.get(i)).append("<br>");

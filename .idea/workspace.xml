@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="95365cfc-dbc1-42df-9a88-831b1cbb9cbb" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/bsu/rfe/java/group6/Ozhich/own/project/i.jpg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/myChat/bsu/rfe/java/group6/Ozhich/own/project/MainFrame$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/myChat/bsu/rfe/java/group6/Ozhich/own/project/MainFrame$1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/myChat/bsu/rfe/java/group6/Ozhich/own/project/MainFrame$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/myChat/bsu/rfe/java/group6/Ozhich/own/project/MainFrame$2.class" afterDir="false" />
@@ -12,6 +11,7 @@
       <change beforePath="$PROJECT_DIR$/out/production/myChat/bsu/rfe/java/group6/Ozhich/own/project/MainFrame$6.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/myChat/bsu/rfe/java/group6/Ozhich/own/project/MainFrame$6.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/myChat/bsu/rfe/java/group6/Ozhich/own/project/MainFrame.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/myChat/bsu/rfe/java/group6/Ozhich/own/project/MainFrame.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/bsu/rfe/java/group6/Ozhich/own/project/MainFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/bsu/rfe/java/group6/Ozhich/own/project/MainFrame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/bsu/rfe/java/group6/Ozhich/own/project/i.jpg" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -245,7 +245,9 @@
       <workItem from="1587990647617" duration="137000" />
       <workItem from="1587992476924" duration="3434000" />
       <workItem from="1587997602653" duration="312000" />
-      <workItem from="1588149062845" duration="6235000" />
+      <workItem from="1588149062845" duration="7630000" />
+      <workItem from="1588157505150" duration="1873000" />
+      <workItem from="1588166819950" duration="9013000" />
     </task>
     <servers />
   </component>
@@ -264,21 +266,5 @@
         </entry>
       </map>
     </option>
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/bsu/rfe/java/group6/Ozhich/own/project/MainFrame.java</url>
-          <line>421</line>
-          <option name="timeStamp" value="2" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/bsu/rfe/java/group6/Ozhich/own/project/MainFrame.java</url>
-          <line>70</line>
-          <option name="timeStamp" value="6" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>
